@@ -1,4 +1,5 @@
 import {articles} from "./articles.js";
+
 const blogContainer = document.querySelector('section')
 
 /**
@@ -25,9 +26,19 @@ function ajoutArticle(article) {
 
     articleElement.append(articleTitle, articleSummary)
 
+    articleElement.addEventListener('mouseover', () => {
+        articleElement.classList.add('hover')
+    })
+
+    articleElement.addEventListener('mouseout', () => {
+        articleElement.classList.remove('hover')
+    })
+
     return articleElement
 }
 
-for (const article of articles) {
+articles.forEach((article) => {
     blogContainer.append(ajoutArticle(article))
-}
+})
+
+

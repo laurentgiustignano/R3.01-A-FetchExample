@@ -1,0 +1,32 @@
+.hover {
+    background-color: #d5c2c2;
+}
+
+body {
+    font-family: "Bookman Old Style", serif;
+    font-size: 20px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 3em;
+}
+
+h2 {
+    font-size: 1.5em;
+}
+
+p {
+    width: 60%;
+    font-size: 1em;
+}
+
+article {
+    margin: 1.2em;
+    padding: .25em;
+    border-radius: 10px;
+}
+
+section {
+    margin: 1em;
+}
