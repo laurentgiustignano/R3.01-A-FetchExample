@@ -2,6 +2,22 @@ import {articles} from "./articles.js";
 
 const blogContainer = document.querySelector('section')
 
+const bouton = document.createElement('button')
+bouton.innerText = "3 derniers articles"
+document.querySelector('h1').after(bouton)
+let statusButton = false
+
+bouton.addEventListener('click', () => {
+    if (statusButton) {
+        afficheTout()
+    }
+    else {
+        seulementTrois()
+    }
+    statusButton = !statusButton
+})
+
+
 /**
  *
  * @param {string}tagName
@@ -15,13 +31,16 @@ function ajoutElemAvecTexte(tagName, content) {
 }
 
 /**
- * @param {{id: number, title: string, summary: string}}article
+ * @typedef {Article, date: string}  ArticleDate
+ */
+
+/**
+ * @param {ArticleDate} article
  * @return {HTMLElement}
  */
 function ajoutArticle(article) {
     const articleElement = document.createElement('article')
-
-    const articleTitle = ajoutElemAvecTexte('h2', article.title)
+    const articleTitle = ajoutElemAvecTexte('h2', article.title + " - " + article.date)
     const articleSummary = ajoutElemAvecTexte('p', article.summary)
 
     articleElement.append(articleTitle, articleSummary)
@@ -37,8 +56,68 @@ function ajoutArticle(article) {
     return articleElement
 }
 
+
+/**
+ * Formate une date en aaaa/mm/jj
+ * @param {Date} uneDate
+ * @return {string}
+ */
+function dateFormatee(uneDate) {
+    const annee = uneDate.getFullYear()
+    const mois = String(uneDate.getMonth() + 1).padStart(2, '0')
+    const jour = String(uneDate.getDate()).padStart(2, '0')
+
+    return `${annee}/${mois}/${jour}`
+}
+
+/**
+ * Génère une date aléatoire entre maintenant et nbJourMax
+ * @param {number} [nbJourMax=31]
+ * @return {Date}
+ */
+function dateAleatoire(nbJourMax = 31) {
+    const nbJours = Math.floor(Math.random() * nbJourMax)
+    const dateRetour = new Date()
+    dateRetour.setDate(dateRetour.getDate() - nbJours)
+
+    return dateRetour
+}
+
 articles.forEach((article) => {
+    const joursAvant = dateAleatoire()
+    article.date = dateFormatee(joursAvant)
     blogContainer.append(ajoutArticle(article))
 })
+
+
+const idArticlesTrie = articles
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 3)
+    .map(article => article.id)
+
+const blogContent = blogContainer.children
+
+/**
+ * Ajoute l'attribut hidden aux anciens articles pour n'en faire
+ * apparaitre que trois
+ */
+function seulementTrois() {
+    for (let indice = 0; indice < blogContainer.childElementCount; indice++) {
+        if (!idArticlesTrie.includes(indice + 1)) {
+            blogContent[indice].setAttribute('hidden', 'true')
+        }
+        else blogContent[indice].removeAttribute('hidden')
+    }
+}
+
+/**
+ * Supprime l'attribut hidden qui cache les anciens articles
+ */
+function afficheTout() {
+    for (let indice = 0; indice < blogContainer.childElementCount; indice++) {
+        blogContent[indice].removeAttribute('hidden')
+    }
+}
+
 
 

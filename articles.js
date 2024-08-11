@@ -1,3 +1,10 @@
+/**
+ * @typedef {summary: string, id: number, title: string} Article
+ *
+ */
+
+/**
+ * @type {Article[]} */
 export const articles = [
     {
         id: 1,
