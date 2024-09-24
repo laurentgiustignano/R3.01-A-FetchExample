@@ -9,17 +9,20 @@ let statusButton = false
 
 bouton.addEventListener('click', () => {
     if (statusButton) {
-        afficheTout()
+        afficheTout();
+        bouton.innerText = "3 derniers articles";
     }
     else {
-        seulementTrois()
+        seulementTrois();
+        bouton.innerText = "Tous les articles";
     }
     statusButton = !statusButton
 })
 
 
 /**
- *
+ * Créé un Element HTML spécifié par le paramètre tagName auquel on ajoute
+ * un contenu spécifié par content
  * @param {string}tagName
  * @param {string}content
  * @return {HTMLAnchorElement | HTMLElement | HTMLAreaElement | HTMLAudioElement | HTMLBaseElement | HTMLQuoteElement | HTMLBodyElement | HTMLBRElement | HTMLButtonElement | HTMLCanvasElement | HTMLTableCaptionElement | HTMLTableColElement | HTMLDataElement | HTMLDataListElement | HTMLModElement | HTMLDetailsElement | HTMLDialogElement | HTMLDivElement | HTMLDListElement | HTMLEmbedElement | HTMLFieldSetElement | HTMLFormElement | HTMLHeadingElement | HTMLHeadElement | HTMLHRElement | HTMLHtmlElement | HTMLIFrameElement | HTMLImageElement | HTMLInputElement | HTMLLabelElement | HTMLLegendElement | HTMLLIElement | HTMLLinkElement | HTMLMapElement | HTMLMenuElement | HTMLMetaElement | HTMLMeterElement | HTMLObjectElement | HTMLOListElement | HTMLOptGroupElement | HTMLOptionElement | HTMLOutputElement | HTMLParagraphElement | HTMLPictureElement | HTMLPreElement | HTMLProgressElement | HTMLScriptElement | HTMLSelectElement | HTMLSlotElement | HTMLSourceElement | HTMLSpanElement | HTMLStyleElement | HTMLTableElement | HTMLTableSectionElement | HTMLTableCellElement | HTMLTemplateElement | HTMLTextAreaElement | HTMLTimeElement | HTMLTitleElement | HTMLTableRowElement | HTMLTrackElement | HTMLUListElement | HTMLVideoElement}
@@ -35,6 +38,8 @@ function ajoutElemAvecTexte(tagName, content) {
  */
 
 /**
+ * Créé un HTMLElement représentant un article avec son titre en h2
+ * et son résumé dans un p
  * @param {ArticleDate} article
  * @return {HTMLElement}
  */
@@ -114,8 +119,8 @@ function seulementTrois() {
  * Supprime l'attribut hidden qui cache les anciens articles
  */
 function afficheTout() {
-    for (let indice = 0; indice < blogContainer.childElementCount; indice++) {
-        blogContent[indice].removeAttribute('hidden')
+    for (const blogContentElement of blogContent) {
+        blogContentElement.removeAttribute('hidden')
     }
 }
 
