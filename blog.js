@@ -1,23 +1,16 @@
-import {articles} from "./articles.js";
+//import {articles} from "./articles.js";
+/**
+ * @typedef {body: string, id: number, title: string} Article
+ *
+ */
 
 const blogContainer = document.querySelector('section')
 
 const bouton = document.createElement('button')
 bouton.innerText = "3 derniers articles"
 document.querySelector('h1').after(bouton)
-let statusButton = false
 
-bouton.addEventListener('click', () => {
-    if (statusButton) {
-        afficheTout();
-        bouton.innerText = "3 derniers articles";
-    }
-    else {
-        seulementTrois();
-        bouton.innerText = "Tous les articles";
-    }
-    statusButton = !statusButton
-})
+
 
 
 /**
@@ -28,9 +21,9 @@ bouton.addEventListener('click', () => {
  * @return {HTMLAnchorElement | HTMLElement | HTMLAreaElement | HTMLAudioElement | HTMLBaseElement | HTMLQuoteElement | HTMLBodyElement | HTMLBRElement | HTMLButtonElement | HTMLCanvasElement | HTMLTableCaptionElement | HTMLTableColElement | HTMLDataElement | HTMLDataListElement | HTMLModElement | HTMLDetailsElement | HTMLDialogElement | HTMLDivElement | HTMLDListElement | HTMLEmbedElement | HTMLFieldSetElement | HTMLFormElement | HTMLHeadingElement | HTMLHeadElement | HTMLHRElement | HTMLHtmlElement | HTMLIFrameElement | HTMLImageElement | HTMLInputElement | HTMLLabelElement | HTMLLegendElement | HTMLLIElement | HTMLLinkElement | HTMLMapElement | HTMLMenuElement | HTMLMetaElement | HTMLMeterElement | HTMLObjectElement | HTMLOListElement | HTMLOptGroupElement | HTMLOptionElement | HTMLOutputElement | HTMLParagraphElement | HTMLPictureElement | HTMLPreElement | HTMLProgressElement | HTMLScriptElement | HTMLSelectElement | HTMLSlotElement | HTMLSourceElement | HTMLSpanElement | HTMLStyleElement | HTMLTableElement | HTMLTableSectionElement | HTMLTableCellElement | HTMLTemplateElement | HTMLTextAreaElement | HTMLTimeElement | HTMLTitleElement | HTMLTableRowElement | HTMLTrackElement | HTMLUListElement | HTMLVideoElement}
  */
 function ajoutElemAvecTexte(tagName, content) {
-    const element = document.createElement(tagName)
-    element.textContent = content
-    return element
+  const element = document.createElement(tagName)
+  element.textContent = content
+  return element
 }
 
 /**
@@ -44,21 +37,21 @@ function ajoutElemAvecTexte(tagName, content) {
  * @return {HTMLElement}
  */
 function ajoutArticle(article) {
-    const articleElement = document.createElement('article')
-    const articleTitle = ajoutElemAvecTexte('h2', article.title + " - " + article.date)
-    const articleSummary = ajoutElemAvecTexte('p', article.summary)
+  const articleElement = document.createElement('article')
+  const articleTitle = ajoutElemAvecTexte('h2', article.title + " - " + article.date)
+  const articleSummary = ajoutElemAvecTexte('p', article.body)
 
-    articleElement.append(articleTitle, articleSummary)
+  articleElement.append(articleTitle, articleSummary)
 
-    articleElement.addEventListener('mouseover', () => {
-        articleElement.classList.add('hover')
-    })
+  articleElement.addEventListener('mouseover', () => {
+    articleElement.classList.add('hover')
+  })
 
-    articleElement.addEventListener('mouseout', () => {
-        articleElement.classList.remove('hover')
-    })
+  articleElement.addEventListener('mouseout', () => {
+    articleElement.classList.remove('hover')
+  })
 
-    return articleElement
+  return articleElement
 }
 
 
@@ -68,11 +61,11 @@ function ajoutArticle(article) {
  * @return {string}
  */
 function dateFormatee(uneDate) {
-    const annee = uneDate.getFullYear()
-    const mois = String(uneDate.getMonth() + 1).padStart(2, '0')
-    const jour = String(uneDate.getDate()).padStart(2, '0')
+  const annee = uneDate.getFullYear()
+  const mois = String(uneDate.getMonth() + 1).padStart(2, '0')
+  const jour = String(uneDate.getDate()).padStart(2, '0')
 
-    return `${annee}/${mois}/${jour}`
+  return `${annee}/${mois}/${jour}`
 }
 
 /**
@@ -81,48 +74,33 @@ function dateFormatee(uneDate) {
  * @return {Date}
  */
 function dateAleatoire(nbJourMax = 31) {
-    const nbJours = Math.floor(Math.random() * nbJourMax)
-    const dateRetour = new Date()
-    dateRetour.setDate(dateRetour.getDate() - nbJours)
+  const nbJours = Math.floor(Math.random() * nbJourMax)
+  const dateRetour = new Date()
+  dateRetour.setDate(dateRetour.getDate() - nbJours)
 
-    return dateRetour
+  return dateRetour
 }
 
-articles.forEach((article) => {
-    const joursAvant = dateAleatoire()
-    article.date = dateFormatee(joursAvant)
-    blogContainer.append(ajoutArticle(article))
-})
+const endPoint = 'http://localhost:3000/api/posts/';
+const urls = [
+  endPoint + 5,
+  endPoint + 6,
+  endPoint + 7,
+  endPoint + 8,
+  endPoint + 9,
+]
 
+const requests = urls.map(url => fetch(url));
 
-const idArticlesTrie = articles
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 3)
-    .map(article => article.id)
+Promise.all(requests)
+  .then(responses => responses.forEach((response) => {
+    response.json()
+      .then((data) => {
+        const joursAvant = dateAleatoire()
+        data.date = dateFormatee(joursAvant)
+        blogContainer.append(ajoutArticle(data))
+      })
+  }))
 
-const blogContent = blogContainer.children
-
-/**
- * Ajoute l'attribut hidden aux anciens articles pour n'en faire
- * apparaitre que trois
- */
-function seulementTrois() {
-    for (let indice = 0; indice < blogContainer.childElementCount; indice++) {
-        if (!idArticlesTrie.includes(indice + 1)) {
-            blogContent[indice].setAttribute('hidden', 'true')
-        }
-        else blogContent[indice].removeAttribute('hidden')
-    }
-}
-
-/**
- * Supprime l'attribut hidden qui cache les anciens articles
- */
-function afficheTout() {
-    for (const blogContentElement of blogContent) {
-        blogContentElement.removeAttribute('hidden')
-    }
-}
-
-
-
+/*
+const idArticlesTrie = articles*/

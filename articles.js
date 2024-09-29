@@ -1,7 +1,4 @@
-/**
- * @typedef {summary: string, id: number, title: string} Article
- *
- */
+
 
 /**
  * @type {Article[]} */
